@@ -17,7 +17,7 @@ pnpm add scale-adjust
   </div>
   
   <script type="module">
-    import { Scaler } from "scale-adjust";
+    import { Scaler } from 'scale-adjust'
 
     // 参照 window
     const scaler = new Scaler('#container', 1920, 1080)
@@ -26,8 +26,8 @@ pnpm add scale-adjust
     const scaler = new Scaler('#container', 1920, 1080, { reference: true })
 
     // 参照任意元素
-    const app = document.getElementById("app");
-    const container = document.getElementById("container");
+    const app = document.getElementById('app')
+    const container = document.getElementById('container')
     // 只是举例说明，可以直接使用 #container 和 #app
     const scaler = new Scaler(container, 1920, 1080, { reference: container })
   </script>
