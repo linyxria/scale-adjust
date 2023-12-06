@@ -1,0 +1,33 @@
+{
+  "name": "scale-adjust",
+  "version": "0.1.0",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/scale-adjust.umd.cjs",
+  "module": "./dist/scale-adjust.js",
+  "types": "./dist/scale-adjust.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/scale-adjust.js",
+      "require": "./dist/scale-adjust.umd.cjs"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && eslint . && vite build",
+    "preview": "vite preview",
+    "prepublishOnly": "pnpm build"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.3",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "eslint": "^8.55.0",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^3.6.4"
+  }
+}
