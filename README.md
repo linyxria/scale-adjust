@@ -30,6 +30,11 @@ pnpm add scale-adjust
     const container = document.getElementById('container')
     // 只是举例说明，可以直接使用 #container 和 #app
     const scaler = new Scaler(container, 1920, 1080, { reference: container })
+
+    // 监听 scale 变化
+    scaler.listen(({ scale }) => {
+      console.log('scale:', scale)
+    })
   </script>
 </body>
 ```

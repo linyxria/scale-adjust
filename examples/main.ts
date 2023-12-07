@@ -25,4 +25,9 @@ app.style.backgroundColor = 'bisque'
 // 参照父元素
 // new Scaler('#container', 1920, 1080, { reference: true })
 // 参照任意元素
-new Scaler('#container', 1920, 1080, { reference: '#app' })
+const scaler = new Scaler('#container', 1920, 1080, { reference: '#app' })
+
+// 监听 scale 变化
+scaler.listen(({ scale }) => {
+  console.log('scale:', scale)
+})
