@@ -12,13 +12,13 @@ export class Scaler<
   TTarget extends HTMLElement = HTMLElement,
   TReference extends HTMLElement = HTMLElement
 > {
-  target: TTarget | null = null
-  reference: TReference | null = null
-  width: number
-  height: number
+  readonly target: TTarget | null = null
+  readonly reference: TReference | null = null
+  readonly width: number
+  readonly height: number
   scale: number
-  private resizeObserver: ResizeObserver | null = null
-  private listeners: ListenCallback[] = []
+  private readonly resizeObserver: ResizeObserver | null = null
+  private readonly listeners: ListenCallback[] = []
 
   constructor(
     target: ElementWithSelectors<TTarget>,
@@ -40,28 +40,32 @@ export class Scaler<
     this.width = width
     this.height = height
 
-    let initScale
+    const initScale = this.calculateScale(
+      referenceElement
+        ? referenceElement.clientWidth
+        : document.documentElement.clientWidth,
+      referenceElement
+        ? referenceElement.clientHeight
+        : document.documentElement.clientHeight
+    )
+    this.scale = initScale
+
+    if (targetElement) {
+      targetElement.style.width = `${this.width}px`
+      targetElement.style.height = `${this.height}px`
+      targetElement.style.position = 'absolute'
+      targetElement.style.top = '50%'
+      targetElement.style.left = '50%'
+      targetElement.style.transform = this.transformTemplate(initScale)
+      targetElement.style.transformOrigin = '0 0'
+    }
 
     if (referenceElement) {
-      initScale = this.calculateScale(
-        referenceElement.clientWidth,
-        referenceElement.clientHeight
-      )
       referenceElement.style.position = 'relative'
       this.resizeObserver = this.createResizeObserver(referenceElement)
     } else {
-      initScale = this.calculateScale(
-        document.documentElement.clientWidth,
-        document.documentElement.clientHeight
-      )
       window.addEventListener('resize', this.handleWindowResize)
     }
-
-    if (targetElement) {
-      this.mountTargetStyle(targetElement, initScale)
-    }
-
-    this.scale = initScale
   }
 
   private getElement<T extends HTMLElement>(element: ElementWithSelectors<T>) {
@@ -90,16 +94,6 @@ export class Scaler<
 
   private transformTemplate(scale: number) {
     return `scale(${scale}) translate(-50%, -50%)`
-  }
-
-  private mountTargetStyle(target: TTarget, scale: number) {
-    target.style.width = `${this.width}px`
-    target.style.height = `${this.height}px`
-    target.style.position = 'absolute'
-    target.style.top = '50%'
-    target.style.left = '50%'
-    target.style.transform = this.transformTemplate(scale)
-    target.style.transformOrigin = '0 0'
   }
 
   private createResizeObserver(reference: TReference) {
@@ -148,7 +142,6 @@ export class Scaler<
     if (this.reference && this.resizeObserver) {
       this.resizeObserver.unobserve(this.reference)
       this.resizeObserver.disconnect()
-      this.resizeObserver = null
     } else {
       document.removeEventListener('resize', this.handleWindowResize)
     }
