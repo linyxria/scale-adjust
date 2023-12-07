@@ -1,12 +1,13 @@
-export type ElementWithSelector<T extends HTMLElement = HTMLElement> =
+export type ElementWithSelectors<T extends HTMLElement = HTMLElement> =
   | T
   | string
-export type ScalerOptions<T extends HTMLElement> = {
-  reference?: ElementWithSelector<T> | true
+
+export type ScalerOptions<T extends HTMLElement = HTMLElement> = {
+  reference?: ElementWithSelectors<T> | true
 }
 
 export class Scaler<
-  TTarget extends HTMLElement,
+  TTarget extends HTMLElement = HTMLElement,
   TReference extends HTMLElement = HTMLElement
 > {
   target: TTarget | null = null
@@ -17,7 +18,7 @@ export class Scaler<
   resizeObserver: ResizeObserver | null = null
 
   constructor(
-    target: ElementWithSelector<TTarget>,
+    target: ElementWithSelectors<TTarget>,
     width: number,
     height: number,
     { reference }: ScalerOptions<TReference> = {}
@@ -60,7 +61,7 @@ export class Scaler<
     this.scale = initScale
   }
 
-  getElement<T extends HTMLElement>(element: ElementWithSelector<T>) {
+  getElement<T extends HTMLElement>(element: ElementWithSelectors<T>) {
     return typeof element === 'string'
       ? document.querySelector<T>(element)
       : element

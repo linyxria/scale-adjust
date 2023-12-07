@@ -1,1 +1,1 @@
-export { type ElementWithSelector, Scaler, type ScalerOptions } from './scaler'
+export { type ElementWithSelectors, Scaler, type ScalerOptions } from './scaler'
