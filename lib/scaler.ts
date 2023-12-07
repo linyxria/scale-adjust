@@ -6,9 +6,7 @@ export type ScalerOptions<T extends HTMLElement = HTMLElement> = {
   reference?: ElementWithSelectors<T> | true
 }
 
-export type ListenPayload = { scale: number }
-
-export type ListenCallback = (payload: ListenPayload) => void
+type ListenCallback = (payload: { scale: number }) => void
 
 export class Scaler<
   TTarget extends HTMLElement = HTMLElement,
