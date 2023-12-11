@@ -2,8 +2,14 @@ export type ElementWithSelectors<T extends HTMLElement = HTMLElement> =
   | T
   | string
 
-export type ScalerOptions<T extends HTMLElement = HTMLElement> = {
-  reference?: ElementWithSelectors<T> | true
+export type ScalerOptions<
+  TTarget extends HTMLElement = HTMLElement,
+  TReference extends HTMLElement = HTMLElement
+> = {
+  el: ElementWithSelectors<TTarget>
+  width: number
+  height: number
+  reference?: ElementWithSelectors<TReference> | true
 }
 
 type ListenCallback = (payload: { scale: number }) => void
@@ -20,13 +26,13 @@ export class Scaler<
   private readonly resizeObserver: ResizeObserver | null = null
   private readonly listeners: ListenCallback[] = []
 
-  constructor(
-    target: ElementWithSelectors<TTarget>,
-    width: number,
-    height: number,
-    { reference }: ScalerOptions<TReference> = {}
-  ) {
-    const targetElement = this.getElement(target)
+  constructor({
+    el,
+    width,
+    height,
+    reference,
+  }: ScalerOptions<TTarget, TReference>) {
+    const targetElement = this.getElement(el)
     const referenceElement = reference
       ? reference === true
         ? targetElement

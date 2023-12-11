@@ -20,16 +20,30 @@ pnpm add scale-adjust
     import { Scaler } from 'scale-adjust'
 
     // 参照 window
-    const scaler = new Scaler('#container', 1920, 1080)
+    const scaler = new Scaler({
+      el: '#container',
+      width: 1920,
+      height: 1080,
+    })
 
     // 参照父元素
-    const scaler = new Scaler('#container', 1920, 1080, { reference: true })
+    const scaler = new Scaler({
+      el: '#container',
+      width: 1920,
+      height: 1080,
+      reference: true,
+    })
 
     // 参照任意元素
     const app = document.getElementById('app')
     const container = document.getElementById('container')
     // 只是举例说明，可以直接使用 #container 和 #app
-    const scaler = new Scaler(container, 1920, 1080, { reference: container })
+    const scaler = new Scaler({
+      el: container,
+      width: 1920,
+      height: 1080,
+      reference: app,
+    })
 
     // 监听 scale 变化
     scaler.listen(({ scale }) => {

@@ -9,6 +9,7 @@ export default defineConfig({
       name: 'ScaleAdjust',
       fileName: 'scale-adjust',
     },
+    copyPublicDir: false,
   },
   plugins: [dts({ rollupTypes: true })],
 })
