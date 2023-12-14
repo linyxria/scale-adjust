@@ -1,10 +1,13 @@
-export type ElementWithSelectors<T extends HTMLElement = HTMLElement> =
-  | T
-  | string
+import {
+  ElementWithSelectors,
+  getElement,
+  isHTMLElement,
+  transformTemplate,
+} from './utilities'
 
 export type ScalerOptions<
-  TTarget extends HTMLElement = HTMLElement,
-  TReference extends HTMLElement = HTMLElement
+  TTarget extends Element,
+  TReference extends Element = Element
 > = {
   el: ElementWithSelectors<TTarget>
   width: number
@@ -15,15 +18,15 @@ export type ScalerOptions<
 type ListenCallback = (payload: { scale: number }) => void
 
 export class Scaler<
-  TTarget extends HTMLElement = HTMLElement,
-  TReference extends HTMLElement = HTMLElement
+  TTarget extends Element,
+  TReference extends Element = Element
 > {
-  readonly target: TTarget | null = null
-  readonly reference: TReference | null = null
+  readonly target: TTarget | null
+  readonly reference: TReference | null
   readonly width: number
   readonly height: number
   scale: number
-  private readonly resizeObserver: ResizeObserver | null = null
+  private readonly resizeObserver: ResizeObserver | undefined
   private readonly listeners: ListenCallback[] = []
 
   constructor({
@@ -32,13 +35,13 @@ export class Scaler<
     height,
     reference,
   }: ScalerOptions<TTarget, TReference>) {
-    const targetElement = this.getElement(el)
+    const targetElement = getElement(el)
     const referenceElement = reference
       ? reference === true
         ? targetElement
-          ? (targetElement.parentElement as TReference)
+          ? (targetElement.parentElement as Element as TReference)
           : null
-        : this.getElement(reference)
+        : getElement(reference)
       : null
 
     this.target = targetElement
@@ -47,37 +50,34 @@ export class Scaler<
     this.height = height
 
     const initScale = this.calculateScale(
-      referenceElement
-        ? referenceElement.clientWidth
+      this.reference
+        ? this.reference.clientWidth
         : document.documentElement.clientWidth,
-      referenceElement
-        ? referenceElement.clientHeight
+      this.reference
+        ? this.reference.clientHeight
         : document.documentElement.clientHeight
     )
     this.scale = initScale
 
-    if (targetElement) {
-      targetElement.style.width = `${this.width}px`
-      targetElement.style.height = `${this.height}px`
-      targetElement.style.position = 'absolute'
-      targetElement.style.top = '50%'
-      targetElement.style.left = '50%'
-      targetElement.style.transform = this.transformTemplate(initScale)
-      targetElement.style.transformOrigin = '0 0'
+    if (isHTMLElement(this.target)) {
+      this.target.style.width = `${this.width}px`
+      this.target.style.height = `${this.height}px`
+      this.target.style.position = 'absolute'
+      this.target.style.top = '50%'
+      this.target.style.left = '50%'
+      this.target.style.transform = transformTemplate(initScale)
+      this.target.style.transformOrigin = '0 0'
     }
 
-    if (referenceElement) {
-      referenceElement.style.position = 'relative'
-      this.resizeObserver = this.createResizeObserver(referenceElement)
+    if (this.reference) {
+      this.resizeObserver = this.createResizeObserver(this.reference)
+
+      if (isHTMLElement(this.reference)) {
+        this.reference.style.position = 'relative'
+      }
     } else {
       window.addEventListener('resize', this.handleWindowResize)
     }
-  }
-
-  private getElement<T extends HTMLElement>(element: ElementWithSelectors<T>) {
-    return typeof element === 'string'
-      ? document.querySelector<T>(element)
-      : element
   }
 
   private calculateScale = (
@@ -98,8 +98,10 @@ export class Scaler<
     return result
   }
 
-  private transformTemplate(scale: number) {
-    return `scale(${scale}) translate(-50%, -50%)`
+  private changeTransform(scale: number) {
+    if (isHTMLElement(this.target)) {
+      this.target.style.transform = transformTemplate(scale)
+    }
   }
 
   private createResizeObserver(reference: TReference) {
@@ -109,11 +111,7 @@ export class Scaler<
         entry.target.clientHeight
       )
       this.scale = scale
-
-      if (this.target) {
-        this.target.style.transform = this.transformTemplate(scale)
-      }
-
+      this.changeTransform(scale)
       this.notifyListeners(scale)
     })
     resizeObserver.observe(reference)
@@ -126,11 +124,7 @@ export class Scaler<
       document.documentElement.clientHeight
     )
     this.scale = scale
-
-    if (this.target) {
-      this.target.style.transform = this.transformTemplate(scale)
-    }
-
+    this.changeTransform(scale)
     this.notifyListeners(scale)
   }
 
