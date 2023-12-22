@@ -1,9 +1,4 @@
-import {
-  ElementWithSelectors,
-  getElement,
-  isHTMLElement,
-  transformTemplate,
-} from './utilities'
+import { ElementWithSelectors, getElement, isHTMLElement } from './utilities'
 
 export type ScalerOptions<
   TTarget extends Element,
@@ -13,6 +8,7 @@ export type ScalerOptions<
   width: number
   height: number
   reference?: ElementWithSelectors<TReference> | true
+  transition?: string | boolean
 }
 
 type ListenCallback = (payload: { scale: number }) => void
@@ -29,27 +25,12 @@ export class Scaler<
   private readonly resizeObserver: ResizeObserver | undefined
   private readonly listeners: ListenCallback[] = []
 
-  constructor({
-    el,
-    width,
-    height,
-    reference,
-  }: ScalerOptions<TTarget, TReference>) {
-    const targetElement = getElement(el)
-    const referenceElement = reference
-      ? reference === true
-        ? targetElement
-          ? (targetElement.parentElement as Element as TReference)
-          : null
-        : getElement(reference)
-      : null
-
-    this.target = targetElement
-    this.reference = referenceElement
-    this.width = width
-    this.height = height
-
-    const initScale = this.calculateScale(
+  constructor(options: ScalerOptions<TTarget, TReference>) {
+    this.target = getElement(options.el)
+    this.reference = this.getReferenceElement(options.reference)
+    this.width = options.width
+    this.height = options.height
+    this.scale = this.calculateScale(
       this.reference
         ? this.reference.clientWidth
         : document.documentElement.clientWidth,
@@ -57,26 +38,46 @@ export class Scaler<
         ? this.reference.clientHeight
         : document.documentElement.clientHeight
     )
-    this.scale = initScale
 
     if (isHTMLElement(this.target)) {
-      this.target.style.width = `${this.width}px`
-      this.target.style.height = `${this.height}px`
-      this.target.style.position = 'absolute'
-      this.target.style.top = '50%'
-      this.target.style.left = '50%'
-      this.target.style.transform = transformTemplate(initScale)
-      this.target.style.transformOrigin = '0 0'
+      this.target.classList.add('scale-adjust-container')
+      this.target.style.setProperty('--scale-adjust-width', `${this.width}px`)
+      this.target.style.setProperty('--scale-adjust-height', `${this.height}px`)
+      this.target.style.setProperty('--scale-adjust-scale', `${this.scale}`)
+
+      if (options.transition) {
+        this.target.style.setProperty(
+          '--scale-adjust-transition',
+          options.transition === true
+            ? 'transform 150ms cubic-bezier(0.4, 0, 0.2, 1)'
+            : options.transition
+        )
+      }
     }
 
     if (this.reference) {
       this.resizeObserver = this.createResizeObserver(this.reference)
 
       if (isHTMLElement(this.reference)) {
-        this.reference.style.position = 'relative'
+        this.reference.classList.add('scale-adjust-parent')
       }
     } else {
       window.addEventListener('resize', this.handleWindowResize)
+    }
+  }
+
+  private getReferenceElement(
+    reference: ElementWithSelectors<TReference> | true | undefined
+  ): TReference | null {
+    if (!reference) {
+      return null
+    }
+
+    if (reference === true) {
+      const parentElement = this.target?.parentElement
+      return parentElement ? (parentElement as Element as TReference) : null
+    } else {
+      return getElement(reference)
     }
   }
 
@@ -100,15 +101,16 @@ export class Scaler<
 
   private changeTransform(scale: number) {
     if (isHTMLElement(this.target)) {
-      this.target.style.transform = transformTemplate(scale)
+      this.target.style.setProperty('--scale-adjust-scale', `${scale}`)
     }
   }
 
   private createResizeObserver(reference: TReference) {
-    const resizeObserver = new ResizeObserver(([entry]) => {
+    const resizeObserver = new ResizeObserver((entries) => {
+      const contentBoxSize = entries[0].contentBoxSize[0]
       const scale = this.calculateScale(
-        entry.target.clientWidth,
-        entry.target.clientHeight
+        contentBoxSize.inlineSize,
+        contentBoxSize.blockSize
       )
       this.scale = scale
       this.changeTransform(scale)
@@ -139,8 +141,7 @@ export class Scaler<
   }
 
   destroy() {
-    if (this.reference && this.resizeObserver) {
-      this.resizeObserver.unobserve(this.reference)
+    if (this.resizeObserver) {
       this.resizeObserver.disconnect()
     } else {
       document.removeEventListener('resize', this.handleWindowResize)

@@ -1,0 +1,14 @@
+.scale-adjust-container {
+  width: var(--scale-adjust-width, 1920);
+  height: var(--scale-adjust-height, 1080);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: scale(var(--scale-adjust-scale, 1)) translate(-50%, -50%);
+  transform-origin: 0 0;
+  transition: var(--scale-adjust-transition, none);
+}
+
+.scale-adjust-parent {
+  position: relative;
+}

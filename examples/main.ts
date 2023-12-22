@@ -1,4 +1,5 @@
 import './style.css'
+import '../lib/scaler.css'
 
 import { Scaler } from '../lib/main'
 
@@ -7,9 +8,6 @@ app.innerHTML = `
   <div id="container">
   </div>
 `
-
-const container = document.querySelector<HTMLDivElement>('#container')!
-container.style.backgroundColor = 'aquamarine'
 
 /**
  * 参照 window
@@ -21,13 +19,8 @@ container.style.backgroundColor = 'aquamarine'
 // })
 
 /**
- * 参照某个元素
+ * 参照父元素
  */
-app.style.width = '64vw'
-app.style.height = '48vh'
-app.style.backgroundColor = 'bisque'
-
-// 参照父元素
 // new Scaler({
 //   el: '#container',
 //   width: 1920,
@@ -35,15 +28,20 @@ app.style.backgroundColor = 'bisque'
 //   reference: true,
 // })
 
-// 参照任意元素
+/**
+ * 参照任意元素
+ */
 const scaler = new Scaler({
   el: '#container',
   width: 1920,
   height: 1080,
-  reference: '#app',
+  reference: app,
+  transition: 'transform .3s ease-in-out',
 })
 
-// 监听 scale 变化
+/**
+ * 监听 scale 变化
+ */
 scaler.listen(({ scale }) => {
   console.log('scale:', scale)
 })

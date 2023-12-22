@@ -3,3 +3,13 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+#app {
+  width: 64vw;
+  height: 48vh;
+  background-color: bisque;
+}
+
+#container {
+  background-color: aquamarine;
+}
