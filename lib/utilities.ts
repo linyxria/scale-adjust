@@ -1,7 +1,7 @@
 export type ElementWithSelectors<E extends Element> = E | string
 
 export const getElement = <E extends Element>(
-  element: ElementWithSelectors<E>
+  element: ElementWithSelectors<E> | null
 ) =>
   typeof element === 'string' ? document.querySelector<E>(element) : element
 

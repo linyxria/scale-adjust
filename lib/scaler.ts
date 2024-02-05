@@ -8,7 +8,7 @@ export type ScalerOptions<
    * 目标元素
    * @default document.body
    */
-  el: ElementWithSelectors<Target>
+  el: ElementWithSelectors<Target> | null
   /**
    * 基准宽度
    * @default 1920
@@ -22,7 +22,7 @@ export type ScalerOptions<
   /**
    * 参照的元素，值为 `true` 的时候参照其父元素
    */
-  reference: ElementWithSelectors<Reference> | true
+  reference: ElementWithSelectors<Reference> | true | null
   /**
    * 缩放时的过渡，值为 `true` 时的默认值: `transform 150ms cubic-bezier(0.4, 0, 0.2, 1)`
    */
@@ -93,7 +93,7 @@ export class Scaler<
   }
 
   private getReferenceElement(
-    reference: ElementWithSelectors<Reference> | true | undefined
+    reference: ElementWithSelectors<Reference> | true | null | undefined
   ): Reference | null {
     if (!reference) {
       return null
