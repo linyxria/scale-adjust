@@ -1,9 +1,12 @@
 {
   "name": "scale-adjust",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "So easy to adapt to your resolution",
   "author": "linyxria",
-  "repository": "linyxria/scale-adjust",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/linyxria/scale-adjust.git"
+  },
   "license": "MIT",
   "keywords": [
     "scale",

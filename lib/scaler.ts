@@ -1,35 +1,61 @@
 import { ElementWithSelectors, getElement, isHTMLElement } from './utilities'
 
 export type ScalerOptions<
-  TTarget extends Element,
-  TReference extends Element = Element
+  Target extends Element,
+  Reference extends Element = Element
 > = {
-  el: ElementWithSelectors<TTarget>
+  /**
+   * 目标元素
+   * @default document.body
+   */
+  el: ElementWithSelectors<Target>
+  /**
+   * 基准宽度
+   * @default 1920
+   */
   width: number
+  /**
+   * 基准高度
+   * @default 1080
+   */
   height: number
-  reference?: ElementWithSelectors<TReference> | true
-  transition?: string | boolean
+  /**
+   * 参照的元素，值为 `true` 的时候参照其父元素
+   */
+  reference: ElementWithSelectors<Reference> | true
+  /**
+   * 缩放时的过渡，值为 `true` 时的默认值: `transform 150ms cubic-bezier(0.4, 0, 0.2, 1)`
+   */
+  transition: string | boolean
 }
 
 type ListenCallback = (payload: { scale: number }) => void
 
 export class Scaler<
-  TTarget extends Element,
-  TReference extends Element = Element
+  Target extends Element = Element,
+  Reference extends Element = Element
 > {
-  readonly target: TTarget | null
-  readonly reference: TReference | null
+  readonly target: Target | null
+  readonly reference: Reference | null
   readonly width: number
   readonly height: number
   scale: number
   private readonly resizeObserver: ResizeObserver | undefined
   private readonly listeners: ListenCallback[] = []
 
-  constructor(options: ScalerOptions<TTarget, TReference>) {
-    this.target = getElement(options.el)
-    this.reference = this.getReferenceElement(options.reference)
-    this.width = options.width
-    this.height = options.height
+  constructor(options: Partial<ScalerOptions<Target, Reference>> = {}) {
+    const {
+      el = document.body as Element as Target,
+      width = 1920,
+      height = 1080,
+      reference,
+      transition,
+    } = options
+
+    this.target = getElement(el)
+    this.reference = this.getReferenceElement(reference)
+    this.width = width
+    this.height = height
     this.scale = this.calculateScale(
       this.reference
         ? this.reference.clientWidth
@@ -45,12 +71,12 @@ export class Scaler<
       this.target.style.setProperty('--scale-adjust-height', `${this.height}px`)
       this.target.style.setProperty('--scale-adjust-scale', `${this.scale}`)
 
-      if (options.transition) {
+      if (transition) {
         this.target.style.setProperty(
           '--scale-adjust-transition',
-          options.transition === true
+          transition === true
             ? 'transform 150ms cubic-bezier(0.4, 0, 0.2, 1)'
-            : options.transition
+            : transition
         )
       }
     }
@@ -67,15 +93,15 @@ export class Scaler<
   }
 
   private getReferenceElement(
-    reference: ElementWithSelectors<TReference> | true | undefined
-  ): TReference | null {
+    reference: ElementWithSelectors<Reference> | true | undefined
+  ): Reference | null {
     if (!reference) {
       return null
     }
 
     if (reference === true) {
       const parentElement = this.target?.parentElement
-      return parentElement ? (parentElement as Element as TReference) : null
+      return parentElement ? (parentElement as Element as Reference) : null
     } else {
       return getElement(reference)
     }
@@ -105,7 +131,7 @@ export class Scaler<
     }
   }
 
-  private createResizeObserver(reference: TReference) {
+  private createResizeObserver(reference: Reference) {
     const resizeObserver = new ResizeObserver((entries) => {
       const contentBoxSize = entries[0].contentBoxSize[0]
       const scale = this.calculateScale(

@@ -33,8 +33,8 @@ app.innerHTML = `
  */
 const scaler = new Scaler({
   el: '#container',
-  width: 1920,
-  height: 1080,
+  width: 750,
+  height: 1240,
   reference: app,
   transition: 'transform .3s ease-in-out',
 })
