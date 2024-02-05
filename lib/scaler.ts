@@ -65,6 +65,9 @@ export class Scaler<
         : document.documentElement.clientHeight
     )
 
+    this.notifyListeners(this.scale)
+
+    // TODO 只处理了 HTMLElement 的样式
     if (isHTMLElement(this.target)) {
       this.target.classList.add('scale-adjust-container')
       this.target.style.setProperty('--scale-adjust-width', `${this.width}px`)
