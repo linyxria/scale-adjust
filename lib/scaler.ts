@@ -3,7 +3,7 @@ import { ElementWithSelectors, getElement, isHTMLElement } from './utilities'
 export type ScalerOptions<
   Target extends Element,
   Reference extends Element = Element
-> = {
+> = Partial<{
   /**
    * 目标元素
    * @default document.body
@@ -27,7 +27,7 @@ export type ScalerOptions<
    * 缩放时的过渡，值为 `true` 时的默认值: `transform 150ms cubic-bezier(0.4, 0, 0.2, 1)`
    */
   transition: string | boolean
-}
+}>
 
 type ListenCallback = (payload: { scale: number }) => void
 
@@ -43,7 +43,7 @@ export class Scaler<
   private readonly resizeObserver: ResizeObserver | undefined
   private readonly listeners: ListenCallback[] = []
 
-  constructor(options: Partial<ScalerOptions<Target, Reference>> = {}) {
+  constructor(options: ScalerOptions<Target, Reference> = {}) {
     const {
       el = document.body as Element as Target,
       width = 1920,
@@ -69,7 +69,6 @@ export class Scaler<
 
     // TODO 只处理了 HTMLElement 的样式
     if (isHTMLElement(this.target)) {
-      this.target.classList.add('scale-adjust-container')
       this.target.style.setProperty('--scale-adjust-width', `${this.width}px`)
       this.target.style.setProperty('--scale-adjust-height', `${this.height}px`)
       this.target.style.setProperty('--scale-adjust-scale', `${this.scale}`)
@@ -82,6 +81,8 @@ export class Scaler<
             : transition
         )
       }
+
+      this.target.classList.add('scale-adjust-container')
     }
 
     if (this.reference) {
