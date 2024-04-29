@@ -1,14 +1,18 @@
 .scale-adjust-container {
-  width: var(--scale-adjust-width, 1920);
-  height: var(--scale-adjust-height, 1080);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: scale(var(--scale-adjust-scale, 1)) translate(-50%, -50%);
-  transform-origin: 0 0;
-  transition: var(--scale-adjust-transition, none);
+  width: var(--scale-adjust-width);
+  height: var(--scale-adjust-height);
+  transform-origin: top left;
+  transform: translate(
+      var(--scale-adjust-translate-x),
+      var(--scale-adjust-translate-y)
+    )
+    scale(var(--scale-adjust-scale));
+  transition: var(
+    --scale-adjust-transition,
+    transform 150ms cubic-bezier(0.4, 0, 0.2, 1)
+  );
 }
 
 .scale-adjust-parent {
-  position: relative;
+  overflow: hidden;
 }

@@ -1,15 +1,11 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@import 'modern-normalize/modern-normalize.css';
 
 #app {
-  width: 64vw;
-  height: 48vh;
-  background-color: bisque;
+  width: 45vw;
+  height: 47vh;
+  background-color: cadetblue;
 }
 
 #container {
-  background-color: aquamarine;
+  background-color: blueviolet;
 }
