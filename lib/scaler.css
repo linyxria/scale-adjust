@@ -1,6 +1,7 @@
 .scale-adjust-container {
   width: var(--scale-adjust-width);
   height: var(--scale-adjust-height);
+  overflow: hidden;
   transform-origin: top left;
   transform: translate(
       var(--scale-adjust-translate-x),
