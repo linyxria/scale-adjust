@@ -1,3 +1,5 @@
+import styles from './scaler.module.css'
+
 type ScaleCallback = (scale: number) => void
 
 export interface ScalerOptions<E extends HTMLElement> {
@@ -31,11 +33,11 @@ export class Scaler<E extends HTMLElement> {
     if (element) {
       element.style.setProperty('--scale-adjust-width', `${width}px`)
       element.style.setProperty('--scale-adjust-height', `${height}px`)
-      element.classList.add('scale-adjust-container')
+      element.classList.add(styles.container)
       this.element = element
       const parentElement = element.parentElement
       if (parentElement) {
-        parentElement.classList.add('scale-adjust-parent')
+        parentElement.classList.add(styles.parent)
         this.resizeObserver = this.createResizeObserver(parentElement)
       }
     }

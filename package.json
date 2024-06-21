@@ -1,6 +1,6 @@
 {
   "name": "scale-adjust",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "description": "So easy to adapt to your resolution",
   "author": "linyxria",
   "repository": {
@@ -37,16 +37,16 @@
     "prepublishOnly": "pnpm build"
   },
   "devDependencies": {
-    "@eslint/js": "^9.1.1",
-    "@types/node": "^20.12.7",
-    "eslint": "^9.1.1",
+    "@eslint/js": "^9.5.0",
+    "@types/node": "^20.14.7",
+    "eslint": "^9.5.0",
     "eslint-plugin-simple-import-sort": "^12.1.0",
-    "globals": "^15.1.0",
+    "globals": "^15.6.0",
     "modern-normalize": "^2.0.0",
-    "typescript": "^5.4.5",
-    "typescript-eslint": "^7.7.1",
-    "vite": "^5.2.10",
+    "typescript": "^5.5.2",
+    "typescript-eslint": "^7.13.1",
+    "vite": "^5.3.1",
     "vite-plugin-css-injected-by-js": "^3.5.1",
-    "vite-plugin-dts": "^3.9.0"
+    "vite-plugin-dts": "^3.9.1"
   }
 }

@@ -1,4 +1,4 @@
-.scale-adjust-container {
+.container {
   width: var(--scale-adjust-width);
   height: var(--scale-adjust-height);
   overflow: hidden;
@@ -8,12 +8,9 @@
       var(--scale-adjust-translate-y)
     )
     scale(var(--scale-adjust-scale));
-  transition: var(
-    --scale-adjust-transition,
-    transform 150ms cubic-bezier(0.4, 0, 0.2, 1)
-  );
+  transition: var(--scale-adjust-transition, transform 300ms ease);
 }
 
-.scale-adjust-parent {
+.parent {
   overflow: hidden;
 }
