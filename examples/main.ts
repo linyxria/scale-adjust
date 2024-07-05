@@ -1,6 +1,6 @@
 import './style.css'
 
-import { Scaler } from '../dist/scale-adjust'
+import { Scaler } from '../lib/scaler'
 
 const app = document.querySelector<HTMLDivElement>('#app')!
 app.innerHTML = `

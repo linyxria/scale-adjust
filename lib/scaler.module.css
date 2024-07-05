@@ -1,4 +1,4 @@
-.container {
+.scaler {
   width: var(--scale-adjust-width);
   height: var(--scale-adjust-height);
   overflow: hidden;
@@ -11,6 +11,6 @@
   transition: var(--scale-adjust-transition, transform 300ms ease);
 }
 
-.parent {
+.scaler_parent {
   overflow: hidden;
 }

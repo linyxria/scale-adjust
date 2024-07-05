@@ -33,11 +33,11 @@ export class Scaler<E extends HTMLElement> {
     if (element) {
       element.style.setProperty('--scale-adjust-width', `${width}px`)
       element.style.setProperty('--scale-adjust-height', `${height}px`)
-      element.classList.add(styles.container)
+      element.classList.add(styles.scaler)
       this.element = element
       const parentElement = element.parentElement
       if (parentElement) {
-        parentElement.classList.add(styles.parent)
+        parentElement.classList.add(styles.scaler_parent)
         this.resizeObserver = this.createResizeObserver(parentElement)
       }
     }
